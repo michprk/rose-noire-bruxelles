@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /rose-noire-bruxelles/partials/
+Disallow: /rose-noire-bruxelles/scripts/
+Disallow: /rose-noire-bruxelles/api/
+
+Sitemap: https://michprk.github.io/rose-noire-bruxelles/sitemap.xml
