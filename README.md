@@ -15,10 +15,14 @@ partout, « Commander un bouquet », plus le devis entreprise, l’appel et What
 
 - **Référence de mise en page : Seed** (grande photo lumineuse, titre court aligné à gauche, bouton
   pilule sombre, puis une bande de couleur profonde). La photo est la vraie vitrine de Rose Noire.
-- **Moteur cinématique : le kit « cinematic site »** (héros scroll-scrub). Sans vidéo IA, le vol de
-  caméra est fait avec trois vraies photos de la boutique : la caméra avance dans la vitrine,
-  plonge dans un vase, et le plan suivant s’ouvre en iris depuis ce point, avec un halo de lumière
-  chaude et un grain argentique. Quatre temps : la vitrine, l’atelier, la référence, l’appel à l’action.
+- **Mouvement : comme ciaoenergy.com et Apple.** Défilement amorti (Lenis) et animations
+  **déclenchées** : un seul cran de molette (ou un glissé, ou une flèche) joue un chapitre **entier**
+  du héros, jamais une image à mi-chemin. Sans vidéo IA, le vol de caméra (idée du kit « cinematic
+  site ») est fait avec trois vraies photos de la boutique : la caméra plonge dans un vase et le plan
+  suivant s’ouvre en iris depuis ce point, avec un halo de lumière chaude. Quatre chapitres : la
+  vitrine, l’atelier, la référence, l’appel à l’action ; le geste suivant glisse jusqu’à la boutique.
+- **Son** : ambiance sonore réglable (bouton « Son » + volume dans l’en-tête et le menu mobile),
+  composée et synthétisée en direct, coupée par défaut.
 - **Couleurs** (tirées des photos de la boutique) : ivoire `#fbf6f1`, lin rosé `#f5ebe4`, rose poudré
   `#f6d3d6`, abricot `#f5c9ad`, et un bordeaux presque noir `#3a0c1d` (la couleur d’une rose noire)
   pour les boutons et les bandes sombres. Un seul accent, framboise `#c23561`, pour les italiques.
@@ -39,7 +43,9 @@ cgu.html                conditions d’utilisation, mentions légales, crédits
 partials/               blocs communs (en-tête, pied de page, cookies, icônes, <head>)
 assets/css/main.css     tout le style : charte, typographie, animations, responsive
 assets/js/boot.js       copié en ligne dans le <head> : HTTPS forcé, préférence d’animation, rideau
-assets/js/app.js        héros cinématique, révélations, formulaire, cookies, mesure d’audience…
+assets/js/app.js        héros (un geste = un chapitre), révélations, formulaire, cookies, mesure d’audience…
+assets/js/sound.js      ambiance sonore synthétisée (Web Audio), bouton Son et volume
+assets/vendor/          Lenis 1.3 (défilement amorti, licence MIT)
 assets/img/             photos de la boutique en WebP, plusieurs tailles (srcset)
 assets/fonts/           les 4 polices (woff2, sous-ensemble latin)
 api/                    API des formulaires, hors du site : PHP (Hostinger) ou Cloudflare Workers
@@ -48,7 +54,8 @@ robots.txt, sitemap.xml, .well-known/security.txt, .htaccess, _headers
 scripts/                build.sh, check-links.sh, export-hostinger.sh
 ```
 
-Aucune dépendance à installer : HTML, CSS et JavaScript simples, aucune bibliothèque externe.
+Aucune dépendance à installer : HTML, CSS et JavaScript simples ; seule bibliothèque, Lenis (18 Ko),
+hébergée avec le site.
 
 ## Modifier le site
 
@@ -66,18 +73,33 @@ les plans du héros, produit les favicons et l’image de partage `og.jpg`.
 
 ## Animations
 
-- **Rideau d’ouverture** (une fois par visite) : « Rose Noire » sur fond bordeaux, qui se lève.
-- **Héros** : zoom lent sur chaque plan, plongée dans le point focal, ouverture en iris du plan
-  suivant, halo chaud, grain, textes qui montent et s’effacent, barre de progression des chapitres.
+- **Rideau d’ouverture** (une fois par visite) : « Rose Noire » sur fond bordeaux ; il attend que la
+  photo du héros soit prête, puis se lève (la page n’apparaît jamais à moitié chargée).
+- **Héros, un geste = un chapitre** : molette, pavé tactile, glissé au doigt ou flèches du clavier.
+  Chaque geste lance une transition complète d’environ 1,3 s (plongée dans le point focal, iris,
+  halo, textes qui montent ligne par ligne) ; les crans suivants de la même rafale et l’inertie du
+  pavé tactile sont ignorés. Repères de chapitres cliquables. Les photos « respirent » doucement.
+  Tout est fait en transitions CSS (transform, clip-path, opacité) : fluide, sans calcul à chaque cran.
+- **Défilement** : amorti par Lenis sur toute la page, glissement automatique du héros vers la boutique.
 - **Sections** : titres qui montent ligne par ligne derrière un masque, cartes qui se soulèvent,
   chiffres qui comptent, parallaxe de l’image « Entreprises », lettre de la Maison Blanche qui se
-  redresse, citation qui s’allume mot à mot, galerie qui défile et suit le sens du défilement,
+  redresse et citation qui s’allume mot à mot (jouées d’un coup à l’arrivée), galerie qui défile et suit le sens du défilement,
   « Rose Noire » géant du pied de page dont les lettres se lèvent.
 - **Mobile** : héros plus court, produits en carrousel au doigt, barre « Appeler / Commander »
   collée en bas de l’écran (cachée près du formulaire).
 
 Toutes les animations sont actives par défaut. « Réduire les animations » (pied de page) passe en
 version statique, mémorisée (`rnb_motion`). Aussi : `?motion=reduce`.
+
+## Ambiance sonore
+
+- Bouton **Son** dans l’en-tête (barres animées quand il joue) et curseur de **volume** qui apparaît
+  dès que le son est activé ; mêmes réglages dans le menu mobile. Coupé par défaut : le navigateur
+  n’autorise le son qu’après un geste du visiteur. Choix et volume mémorisés (`rnb_sound`).
+- Une nappe douce (accords de fa majeur qui se succèdent, filtre qui respire), des carillons de verre
+  au hasard, un souffle et une fleur de trois notes à chaque chapitre du héros, un « tic » discret au
+  survol des boutons, deux notes au clic sur une commande. Mis en pause quand l’onglet est caché.
+- Niveaux vérifiés par rendu hors ligne : environ −26 dB en moyenne et −16 dB en crête au volume 60.
 
 ## Formulaire, anti-spam, API
 

@@ -17,7 +17,7 @@
 <meta property="og:image" content="https://michprk.github.io/rose-noire-bruxelles/og.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <!--#include head-->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-3CVeI6A0vViVuw54yCMhyaCxjv9M0gSvA12CVpmIXYM=' https://www.googletagmanager.com; style-src 'self'; img-src 'self' data: blob: https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self'; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.workers.dev; manifest-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-0pZI5w2unwwBjcPR/e4kn8bZRm5YoRBmxjovnsK+zIs=' https://www.googletagmanager.com; style-src 'self'; img-src 'self' data: blob: https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self'; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.workers.dev; manifest-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="theme-color" content="#fbf6f1">
 <meta name="color-scheme" content="light">
@@ -30,9 +30,11 @@
 <link rel="preload" href="/rose-noire-bruxelles/assets/fonts/inria-serif-300-italic-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/rose-noire-bruxelles/assets/fonts/inria-sans-400-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/rose-noire-bruxelles/assets/fonts/inknut-antiqua-500-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/rose-noire-bruxelles/assets/css/main.css?v=2c594c3f7d">
-<script>(function(){var d=document.documentElement,l=location,R=false,m;if(l.protocol==='http:'&&!/^(localhost|127\.0\.0\.1|\[::1\])$/.test(l.hostname)){l.replace('https:'+l.href.slice(5));return}d.classList.add('js');try{m=(l.search.match(/[?&]motion=(full|reduce)/)||[])[1];if(m)localStorage.setItem('rnb_motion',m);R=localStorage.getItem('rnb_motion')==='reduce'}catch(e){}if(R)d.classList.add('reduced');try{if(!R&&d.hasAttribute('data-intro')&&!sessionStorage.getItem('rnb_intro')){d.classList.add('intro');sessionStorage.setItem('rnb_intro','1')}}catch(e){}setTimeout(function(){d.classList.remove('intro')},3200);setTimeout(function(){if(!d.classList.contains('js-ready'))d.classList.remove('js')},6000)})();</script>
-<script src="/rose-noire-bruxelles/assets/js/app.js?v=2c594c3f7d" defer></script>
+<link rel="stylesheet" href="/rose-noire-bruxelles/assets/css/main.css?v=4d58e25304">
+<script>(function(){var d=document.documentElement,l=location,R=false,m;if(l.protocol==='http:'&&!/^(localhost|127\.0\.0\.1|\[::1\])$/.test(l.hostname)){l.replace('https:'+l.href.slice(5));return}d.classList.add('js');try{m=(l.search.match(/[?&]motion=(full|reduce)/)||[])[1];if(m)localStorage.setItem('rnb_motion',m);R=localStorage.getItem('rnb_motion')==='reduce'}catch(e){}if(R)d.classList.add('reduced');try{if(!R&&d.hasAttribute('data-intro')&&!sessionStorage.getItem('rnb_intro')){d.classList.add('intro');sessionStorage.setItem('rnb_intro','1')}}catch(e){}setTimeout(function(){d.classList.remove("intro")},5200);setTimeout(function(){if(!d.classList.contains('js-ready'))d.classList.remove('js')},6000)})();</script>
+<script src="/rose-noire-bruxelles/assets/vendor/lenis.min.js?v=4d58e25304" defer></script>
+<script src="/rose-noire-bruxelles/assets/js/sound.js?v=4d58e25304" defer></script>
+<script src="/rose-noire-bruxelles/assets/js/app.js?v=4d58e25304" defer></script>
 <!--/include-->
 </head>
 <body>
@@ -71,6 +73,11 @@
       <a href="/rose-noire-bruxelles/#faq" data-nav="faq">Questions</a>
     </nav>
     <div class="hdr__end">
+      <div class="snd" data-sound hidden>
+        <button class="snd__btn" type="button" aria-pressed="false" aria-label="Ambiance sonore : coupée. Activer le son" data-sound-toggle><span class="snd__bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="snd__label" aria-hidden="true">Son</span><span class="snd__state" aria-hidden="true" data-sound-state>Off</span></button>
+        <label class="snd__vol"><span class="sr-only">Volume de l’ambiance sonore</span><input type="range" min="0" max="100" step="1" value="60" data-sound-volume></label>
+        <span class="snd__hint" aria-hidden="true">Ambiance sonore</span>
+      </div>
       <a class="hdr__tel" href="tel:+32475614458" data-track="phone_click"><svg aria-hidden="true"><use href="#i-phone"/></svg><span>+32&nbsp;475&nbsp;61&nbsp;44&nbsp;58</span></a>
       <a class="btn btn--dark btn--sm" href="/rose-noire-bruxelles/#contact" data-tab="perso" data-track="cta_header">Commander</a>
       <button class="burger" type="button" aria-expanded="false" aria-controls="menu" data-menu-toggle>
@@ -80,7 +87,7 @@
     </div>
   </div>
 </header>
-<div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Menu" hidden data-menu>
+<div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Menu" hidden data-menu data-lenis-prevent>
   <nav class="menu__nav" aria-label="Menu principal">
     <a href="/rose-noire-bruxelles/#boutique"><span>01</span>La boutique</a>
     <a href="/rose-noire-bruxelles/#entreprises"><span>02</span>Entreprises</a>
@@ -90,6 +97,10 @@
     <a href="/rose-noire-bruxelles/#contact" data-tab="perso"><span>06</span>Contact</a>
   </nav>
   <div class="menu__foot">
+    <div class="menu__sound" data-sound hidden>
+      <button class="snd__btn" type="button" aria-pressed="false" aria-label="Ambiance sonore : coupée. Activer le son" data-sound-toggle><span class="snd__bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="snd__label" aria-hidden="true">Ambiance sonore</span><span class="snd__state" aria-hidden="true" data-sound-state>Off</span></button>
+      <label class="snd__vol"><span class="sr-only">Volume de l’ambiance sonore</span><input type="range" min="0" max="100" step="1" value="60" data-sound-volume></label>
+    </div>
     <a class="btn btn--dark" href="/rose-noire-bruxelles/#contact" data-tab="perso" data-track="cta_menu">Commander un bouquet<svg class="btn__icon" aria-hidden="true"><use href="#i-arrow-r"/></svg></a>
     <a class="btn btn--line" href="tel:+32475614458" data-track="phone_click"><svg class="btn__icon" aria-hidden="true"><use href="#i-phone"/></svg>+32&nbsp;475&nbsp;61&nbsp;44&nbsp;58</a>
     <p>Rue Américaine 160, 1050 Ixelles<br><span class="status" data-hours-status></span></p>
@@ -169,7 +180,8 @@
         <ul>
           <li>Photographies&nbsp;: Rose Noire.</li>
           <li>Polices Instrument Sans, Inria Serif, Inria Sans et Inknut Antiqua&nbsp;: licence SIL Open Font License&nbsp;1.1, hébergées avec le site (aucun appel à un service externe). Licences dans le dossier <code>licenses/</code>.</li>
-          <li>Aucune bibliothèque tierce&nbsp;: HTML, CSS et JavaScript écrits pour ce site.</li>
+          <li>Défilement amorti&nbsp;: Lenis (licence MIT), hébergé avec le site.</li>
+          <li>Ambiance sonore&nbsp;: composée et synthétisée en direct dans le navigateur pour ce site (aucun enregistrement, aucun fichier audio).</li>
         </ul>
         <p>Vos données personnelles&nbsp;: voir la <a href="/rose-noire-bruxelles/confidentialite.html">politique de confidentialité</a>.</p>
       </article>

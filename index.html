@@ -20,7 +20,7 @@
 <meta property="og:image:alt" content="La vitrine lumineuse de Rose Noire garnie de vases de roses pastel, et le titre « Des bouquets de caractère, livrés dans tout Bruxelles. »">
 <meta name="twitter:card" content="summary_large_image">
 <!--#include head-->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-3CVeI6A0vViVuw54yCMhyaCxjv9M0gSvA12CVpmIXYM=' https://www.googletagmanager.com; style-src 'self'; img-src 'self' data: blob: https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self'; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.workers.dev; manifest-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-0pZI5w2unwwBjcPR/e4kn8bZRm5YoRBmxjovnsK+zIs=' https://www.googletagmanager.com; style-src 'self'; img-src 'self' data: blob: https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self'; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.workers.dev; manifest-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="theme-color" content="#fbf6f1">
 <meta name="color-scheme" content="light">
@@ -33,9 +33,11 @@
 <link rel="preload" href="/rose-noire-bruxelles/assets/fonts/inria-serif-300-italic-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/rose-noire-bruxelles/assets/fonts/inria-sans-400-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/rose-noire-bruxelles/assets/fonts/inknut-antiqua-500-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/rose-noire-bruxelles/assets/css/main.css?v=2c594c3f7d">
-<script>(function(){var d=document.documentElement,l=location,R=false,m;if(l.protocol==='http:'&&!/^(localhost|127\.0\.0\.1|\[::1\])$/.test(l.hostname)){l.replace('https:'+l.href.slice(5));return}d.classList.add('js');try{m=(l.search.match(/[?&]motion=(full|reduce)/)||[])[1];if(m)localStorage.setItem('rnb_motion',m);R=localStorage.getItem('rnb_motion')==='reduce'}catch(e){}if(R)d.classList.add('reduced');try{if(!R&&d.hasAttribute('data-intro')&&!sessionStorage.getItem('rnb_intro')){d.classList.add('intro');sessionStorage.setItem('rnb_intro','1')}}catch(e){}setTimeout(function(){d.classList.remove('intro')},3200);setTimeout(function(){if(!d.classList.contains('js-ready'))d.classList.remove('js')},6000)})();</script>
-<script src="/rose-noire-bruxelles/assets/js/app.js?v=2c594c3f7d" defer></script>
+<link rel="stylesheet" href="/rose-noire-bruxelles/assets/css/main.css?v=4d58e25304">
+<script>(function(){var d=document.documentElement,l=location,R=false,m;if(l.protocol==='http:'&&!/^(localhost|127\.0\.0\.1|\[::1\])$/.test(l.hostname)){l.replace('https:'+l.href.slice(5));return}d.classList.add('js');try{m=(l.search.match(/[?&]motion=(full|reduce)/)||[])[1];if(m)localStorage.setItem('rnb_motion',m);R=localStorage.getItem('rnb_motion')==='reduce'}catch(e){}if(R)d.classList.add('reduced');try{if(!R&&d.hasAttribute('data-intro')&&!sessionStorage.getItem('rnb_intro')){d.classList.add('intro');sessionStorage.setItem('rnb_intro','1')}}catch(e){}setTimeout(function(){d.classList.remove("intro")},5200);setTimeout(function(){if(!d.classList.contains('js-ready'))d.classList.remove('js')},6000)})();</script>
+<script src="/rose-noire-bruxelles/assets/vendor/lenis.min.js?v=4d58e25304" defer></script>
+<script src="/rose-noire-bruxelles/assets/js/sound.js?v=4d58e25304" defer></script>
+<script src="/rose-noire-bruxelles/assets/js/app.js?v=4d58e25304" defer></script>
 <!--/include-->
 <link rel="preload" as="image" href="/rose-noire-bruxelles/assets/img/scene-vitrine-1600.webp" imagesrcset="/rose-noire-bruxelles/assets/img/scene-vitrine-640.webp 640w, /rose-noire-bruxelles/assets/img/scene-vitrine-1024.webp 1024w, /rose-noire-bruxelles/assets/img/scene-vitrine-1600.webp 1600w" imagesizes="100vw" fetchpriority="high">
 <script type="application/ld+json">
@@ -101,7 +103,7 @@
   <symbol id="i-quote" viewBox="0 0 24 24"><path fill="currentColor" d="M4 18.5v-5.2C4 9 6.1 6.2 10 5l.8 1.6C8.4 7.6 7.3 9.3 7.2 11.5H10v7H4zm10 0v-5.2C14 9 16.1 6.2 20 5l.8 1.6c-2.4 1-3.5 2.7-3.6 4.9H20v7h-6z"/></symbol>
 </svg>
 <!--/include-->
-<div class="curtain" aria-hidden="true"><p class="curtain__word">Rose Noire<span></span></p></div>
+<div class="curtain" aria-hidden="true"><p class="curtain__word">Rose Noire<span></span></p><span class="curtain__line"></span></div>
 <!--#include header-->
 <a class="skip" href="#main">Aller au contenu</a>
 <header class="hdr" data-header>
@@ -115,6 +117,11 @@
       <a href="/rose-noire-bruxelles/#faq" data-nav="faq">Questions</a>
     </nav>
     <div class="hdr__end">
+      <div class="snd" data-sound hidden>
+        <button class="snd__btn" type="button" aria-pressed="false" aria-label="Ambiance sonore : coupée. Activer le son" data-sound-toggle><span class="snd__bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="snd__label" aria-hidden="true">Son</span><span class="snd__state" aria-hidden="true" data-sound-state>Off</span></button>
+        <label class="snd__vol"><span class="sr-only">Volume de l’ambiance sonore</span><input type="range" min="0" max="100" step="1" value="60" data-sound-volume></label>
+        <span class="snd__hint" aria-hidden="true">Ambiance sonore</span>
+      </div>
       <a class="hdr__tel" href="tel:+32475614458" data-track="phone_click"><svg aria-hidden="true"><use href="#i-phone"/></svg><span>+32&nbsp;475&nbsp;61&nbsp;44&nbsp;58</span></a>
       <a class="btn btn--dark btn--sm" href="/rose-noire-bruxelles/#contact" data-tab="perso" data-track="cta_header">Commander</a>
       <button class="burger" type="button" aria-expanded="false" aria-controls="menu" data-menu-toggle>
@@ -124,7 +131,7 @@
     </div>
   </div>
 </header>
-<div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Menu" hidden data-menu>
+<div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Menu" hidden data-menu data-lenis-prevent>
   <nav class="menu__nav" aria-label="Menu principal">
     <a href="/rose-noire-bruxelles/#boutique"><span>01</span>La boutique</a>
     <a href="/rose-noire-bruxelles/#entreprises"><span>02</span>Entreprises</a>
@@ -134,6 +141,10 @@
     <a href="/rose-noire-bruxelles/#contact" data-tab="perso"><span>06</span>Contact</a>
   </nav>
   <div class="menu__foot">
+    <div class="menu__sound" data-sound hidden>
+      <button class="snd__btn" type="button" aria-pressed="false" aria-label="Ambiance sonore : coupée. Activer le son" data-sound-toggle><span class="snd__bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="snd__label" aria-hidden="true">Ambiance sonore</span><span class="snd__state" aria-hidden="true" data-sound-state>Off</span></button>
+      <label class="snd__vol"><span class="sr-only">Volume de l’ambiance sonore</span><input type="range" min="0" max="100" step="1" value="60" data-sound-volume></label>
+    </div>
     <a class="btn btn--dark" href="/rose-noire-bruxelles/#contact" data-tab="perso" data-track="cta_menu">Commander un bouquet<svg class="btn__icon" aria-hidden="true"><use href="#i-arrow-r"/></svg></a>
     <a class="btn btn--line" href="tel:+32475614458" data-track="phone_click"><svg class="btn__icon" aria-hidden="true"><use href="#i-phone"/></svg>+32&nbsp;475&nbsp;61&nbsp;44&nbsp;58</a>
     <p>Rue Américaine 160, 1050 Ixelles<br><span class="status" data-hours-status></span></p>
@@ -143,64 +154,64 @@
 
 <main id="main">
 
-  <!-- ===== Héros cinématique : la caméra entre dans la boutique au fil du défilement ===== -->
-  <section class="scrub" id="top" aria-label="Rose Noire, fleuriste au Châtelain : la vitrine, l’atelier et les bouquets" data-scrub>
-    <div class="scrub__stage">
-      <div class="scene" data-scene data-fx="0.47" data-fy="0.66">
-        <img src="/rose-noire-bruxelles/assets/img/scene-vitrine-1600.webp" srcset="/rose-noire-bruxelles/assets/img/scene-vitrine-640.webp 640w, /rose-noire-bruxelles/assets/img/scene-vitrine-1024.webp 1024w, /rose-noire-bruxelles/assets/img/scene-vitrine-1600.webp 1600w" sizes="100vw" width="1600" height="1067" alt="La vitrine lumineuse de Rose Noire, rue Américaine : des vases de roses pastel et des branches pêche devant les fenêtres où l’on lit « Rose Noire »" fetchpriority="high" decoding="async">
+  <!-- ===== Héros cinématique : un geste (molette, glissé, flèche) = un chapitre entier ===== -->
+  <section class="cine" id="top" aria-label="Rose Noire, fleuriste au Châtelain : la vitrine, l’atelier et les bouquets" data-cine>
+    <div class="cine__stage">
+      <div class="scene" data-scene data-state="current" data-fx="0.47" data-fy="0.66">
+        <div class="scene__zoom"><img src="/rose-noire-bruxelles/assets/img/scene-vitrine-1600.webp" srcset="/rose-noire-bruxelles/assets/img/scene-vitrine-640.webp 640w, /rose-noire-bruxelles/assets/img/scene-vitrine-1024.webp 1024w, /rose-noire-bruxelles/assets/img/scene-vitrine-1600.webp 1600w" sizes="100vw" width="1600" height="1067" alt="La vitrine lumineuse de Rose Noire, rue Américaine : des vases de roses pastel et des branches pêche devant les fenêtres où l’on lit « Rose Noire »" fetchpriority="high" decoding="async"></div>
       </div>
-      <div class="scene" data-scene data-fx="0.4" data-fy="0.62">
-        <img src="/rose-noire-bruxelles/assets/img/scene-sophie-1600.webp" srcset="/rose-noire-bruxelles/assets/img/scene-sophie-640.webp 640w, /rose-noire-bruxelles/assets/img/scene-sophie-1024.webp 1024w, /rose-noire-bruxelles/assets/img/scene-sophie-1600.webp 1600w" sizes="100vw" width="1600" height="1067" alt="Sophie compose un bouquet de roses dans la vitrine de la boutique, entourée de fleurs pastel" decoding="async">
+      <div class="scene" data-scene data-state="future" data-fx="0.4" data-fy="0.62">
+        <div class="scene__zoom"><img src="/rose-noire-bruxelles/assets/img/scene-sophie-1600.webp" srcset="/rose-noire-bruxelles/assets/img/scene-sophie-640.webp 640w, /rose-noire-bruxelles/assets/img/scene-sophie-1024.webp 1024w, /rose-noire-bruxelles/assets/img/scene-sophie-1600.webp 1600w" sizes="100vw" width="1600" height="1067" alt="Sophie compose un bouquet de roses dans la vitrine de la boutique, entourée de fleurs pastel" fetchpriority="low" decoding="async"></div>
       </div>
-      <div class="scene" data-scene data-fx="0.52" data-fy="0.42">
-        <img src="/rose-noire-bruxelles/assets/img/scene-roses-1600.webp" srcset="/rose-noire-bruxelles/assets/img/scene-roses-640.webp 640w, /rose-noire-bruxelles/assets/img/scene-roses-1024.webp 1024w, /rose-noire-bruxelles/assets/img/scene-roses-1600.webp 1600w" sizes="100vw" width="1600" height="1067" alt="Roses pêche et branches fleuries blanches dans un grand vase, devant la fenêtre" decoding="async">
+      <div class="scene" data-scene data-state="future" data-fx="0.52" data-fy="0.42">
+        <div class="scene__zoom"><img src="/rose-noire-bruxelles/assets/img/scene-roses-1600.webp" srcset="/rose-noire-bruxelles/assets/img/scene-roses-640.webp 640w, /rose-noire-bruxelles/assets/img/scene-roses-1024.webp 1024w, /rose-noire-bruxelles/assets/img/scene-roses-1600.webp 1600w" sizes="100vw" width="1600" height="1067" alt="Roses pêche et branches fleuries blanches dans un grand vase, devant la fenêtre" fetchpriority="low" decoding="async"></div>
       </div>
-      <div class="scrub__veil" aria-hidden="true"></div>
-      <div class="scrub__leak" aria-hidden="true"></div>
-      <div class="scrub__grain" aria-hidden="true"></div>
+      <div class="cine__veil" aria-hidden="true"></div>
+      <div class="cine__glow" aria-hidden="true" data-glow></div>
+      <div class="cine__grain" aria-hidden="true"></div>
 
-      <div class="beat beat--hero" data-beat data-in="-1" data-out="0.25">
-        <p class="eyebrow"><span class="dot"></span>Fleuriste au Châtelain · Ixelles</p>
+      <div class="beat beat--hero" data-beat data-state="current">
+        <p class="eyebrow bi"><span class="dot"></span>Fleuriste au Châtelain · Ixelles</p>
         <h1 class="hero-title"><span class="ln"><span>Des bouquets</span></span><span class="ln"><em>de caractère,</em></span><span class="ln"><span>livrés dans tout</span></span><span class="ln"><span>Bruxelles.</span></span></h1>
-        <p class="hero-sub">Fleurs fraîches, séchées ou artificielles, composées à la main par Sophie dans sa boutique de la rue Américaine. Livraison 15&nbsp;€ dans les 19&nbsp;communes, du mardi au dimanche.</p>
-        <div class="hero-ctas">
+        <p class="hero-sub bi">Fleurs fraîches, séchées ou artificielles, composées à la main par Sophie dans sa boutique de la rue Américaine. Livraison 15&nbsp;€ dans les 19&nbsp;communes, du mardi au dimanche.</p>
+        <div class="hero-ctas bi">
           <a class="btn btn--dark btn--lg" href="#contact" data-tab="perso" data-track="cta_hero">Commander un bouquet</a>
           <a class="link-arrow" href="#boutique" data-track="cta_hero_shop">Voir la boutique<svg aria-hidden="true"><use href="#i-arrow-r"/></svg></a>
         </div>
-        <p class="hero-proof"><svg aria-hidden="true"><use href="#i-spark"/></svg><span>Remerciée par la Maison Blanche · recommandée par <em>ELLE</em> Belgique</span></p>
+        <p class="hero-proof bi"><svg aria-hidden="true"><use href="#i-spark"/></svg><span>Remerciée par la Maison Blanche · recommandée par <em>ELLE</em> Belgique</span></p>
       </div>
 
-      <div class="beat" data-beat data-in="0.33" data-out="0.58">
-        <p class="eyebrow"><span class="num">02</span>L’atelier · depuis 2012</p>
-        <h2 class="beat__title">Une fleuriste,<br><em>pas une plateforme.</em></h2>
-        <p class="beat__text">Au 160 rue Américaine, chaque bouquet est composé à la main par Sophie, avec trente ans de métier et les fleurs de la saison. Une seule interlocutrice, du conseil à la livraison.</p>
+      <div class="beat" data-beat data-state="future">
+        <p class="eyebrow bi"><span class="num">02</span>L’atelier · depuis 2012</p>
+        <h2 class="beat__title"><span class="ln"><span>Une fleuriste,</span></span><span class="ln"><em>pas une plateforme.</em></span></h2>
+        <p class="beat__text bi">Au 160 rue Américaine, chaque bouquet est composé à la main par Sophie, avec trente ans de métier et les fleurs de la saison. Une seule interlocutrice, du conseil à la livraison.</p>
       </div>
 
-      <div class="beat" data-beat data-in="0.64" data-out="0.83">
-        <p class="eyebrow"><span class="num">03</span>La référence</p>
-        <h2 class="beat__title">Jusqu’à la<br><em>Maison Blanche.</em></h2>
-        <p class="beat__text">En 2014, la Maison Blanche a remercié Sophie par écrit pour ses fleurs. ELLE Belgique et L’Éventail la comptent parmi les belles adresses de Bruxelles.</p>
+      <div class="beat" data-beat data-state="future">
+        <p class="eyebrow bi"><span class="num">03</span>La référence</p>
+        <h2 class="beat__title"><span class="ln"><span>Jusqu’à la</span></span><span class="ln"><em>Maison Blanche.</em></span></h2>
+        <p class="beat__text bi">En 2014, la Maison Blanche a remercié Sophie par écrit pour ses fleurs. ELLE Belgique et L’Éventail la comptent parmi les belles adresses de Bruxelles.</p>
       </div>
 
-      <div class="beat beat--end" data-beat data-in="0.87" data-out="9">
-        <p class="eyebrow"><span class="num">04</span>À vous</p>
-        <h2 class="beat__title">Le bon bouquet,<br><em>pour la bonne personne.</em></h2>
-        <p class="beat__text">Dites-nous l’occasion, le style et le budget&nbsp;: Sophie compose, on livre.</p>
-        <div class="hero-ctas">
+      <div class="beat beat--end" data-beat data-state="future">
+        <p class="eyebrow bi"><span class="num">04</span>À vous</p>
+        <h2 class="beat__title"><span class="ln"><span>Le bon bouquet,</span></span><span class="ln"><em>pour la bonne personne.</em></span></h2>
+        <p class="beat__text bi">Dites-nous l’occasion, le style et le budget&nbsp;: Sophie compose, on livre.</p>
+        <div class="hero-ctas bi">
           <a class="btn btn--dark btn--lg" href="#contact" data-tab="perso" data-track="cta_hero_end">Commander un bouquet</a>
           <a class="link-arrow" href="tel:+32475614458" data-track="phone_click">Ou appeler Sophie<svg aria-hidden="true"><use href="#i-arrow-r"/></svg></a>
         </div>
       </div>
 
-      <div class="scrub__ui" aria-hidden="true">
-        <ol class="chapters">
-          <li data-chapter>La vitrine</li>
-          <li data-chapter>L’atelier</li>
-          <li data-chapter>La référence</li>
-          <li data-chapter>À vous</li>
+      <div class="cine__ui">
+        <ol class="chapters" aria-label="Chapitres de la présentation">
+          <li><button type="button" data-goto="0" aria-current="step">La vitrine</button></li>
+          <li><button type="button" data-goto="1">L’atelier</button></li>
+          <li><button type="button" data-goto="2">La référence</button></li>
+          <li><button type="button" data-goto="3">À vous</button></li>
         </ol>
-        <span class="chapters__bar"><span data-scrub-fill></span></span>
-        <p class="cue"><span></span>Faites défiler</p>
+        <span class="chapters__bar" aria-hidden="true"><span></span></span>
+        <p class="cue" aria-hidden="true"><span></span>Faites défiler</p>
       </div>
     </div>
   </section>
@@ -369,7 +380,7 @@
           <li><strong>L’Éventail</strong><span>Sélection «&nbsp;Bonnes adresses&nbsp;»</span></li>
         </ul>
       </div>
-      <figure class="letter" data-letter>
+      <figure class="letter" data-inview>
         <img src="/rose-noire-bruxelles/assets/img/preuve-maison-blanche-640.webp" srcset="/rose-noire-bruxelles/assets/img/preuve-maison-blanche-420.webp 420w, /rose-noire-bruxelles/assets/img/preuve-maison-blanche-640.webp 640w, /rose-noire-bruxelles/assets/img/preuve-maison-blanche-820.webp 820w" sizes="(min-width: 900px) 34vw, 86vw" width="640" height="780" alt="Lettre à en-tête de la Maison Blanche, datée du 21 octobre 2014, adressée à Sophie à Bruxelles" loading="lazy" decoding="async">
         <figcaption>The White House, Washington · 21&nbsp;octobre 2014</figcaption>
       </figure>
@@ -541,7 +552,7 @@
           <label class="field"><span class="field__label">Nom <em>*</em></span><input type="text" name="name" autocomplete="name" maxlength="80" required placeholder="Prénom et nom" aria-describedby="err-name"><span class="field__error" id="err-name"></span></label>
           <label class="field"><span class="field__label">E-mail <em>*</em></span><input type="email" name="email" autocomplete="email" maxlength="120" required placeholder="vous@exemple.be" aria-describedby="err-email"><span class="field__error" id="err-email"></span></label>
           <label class="field"><span class="field__label">Téléphone <em data-phone-required>*</em></span><input type="tel" name="phone" autocomplete="tel" maxlength="24" placeholder="+32 …" aria-describedby="err-phone"><span class="field__error" id="err-phone"></span></label>
-          <label class="field field--wide"><span class="field__label">Message</span><textarea name="message" rows="3" maxlength="1500" placeholder="Le texte de la carte, une précision, une envie…" aria-describedby="err-message"></textarea><span class="field__error" id="err-message"></span></label>
+          <label class="field field--wide"><span class="field__label">Message</span><textarea data-lenis-prevent name="message" rows="3" maxlength="1500" placeholder="Le texte de la carte, une précision, une envie…" aria-describedby="err-message"></textarea><span class="field__error" id="err-message"></span></label>
         </div>
         <div class="hp" aria-hidden="true"><label>Laissez ce champ vide <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
         <p class="form__error" role="alert" data-form-error></p>

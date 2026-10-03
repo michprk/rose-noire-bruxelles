@@ -102,6 +102,59 @@
 
   $$('[data-year]').forEach((el) => { el.textContent = String(new Date().getFullYear()); });
 
+  /* ---------- Défilement amorti (Lenis, comme ciaoenergy.com) ----------
+     La molette glisse au lieu d’avancer par crans. Le héros intercepte les gestes
+     (heroInput) tant que la page est tout en haut. */
+  const heroInput = { wheel: null, touch: null };
+  let lenis = null;
+  safe('lenis', () => {
+    if (reduced || typeof window.Lenis !== 'function') return;
+    lenis = new window.Lenis({
+      lerp: 0.1,
+      smoothWheel: true,
+      syncTouch: false,
+      autoRaf: true,
+      respectReducedMotion: false, // le visiteur garde la main avec « Réduire les animations »
+      virtualScroll: (data) => {
+        const ev = data.event;
+        const fn = ev.type.indexOf('wheel') > -1 ? heroInput.wheel : ev.type.indexOf('touch') > -1 ? heroInput.touch : null;
+        if (fn && fn(data.deltaX, data.deltaY, ev)) { if (ev.cancelable) ev.preventDefault(); return false; }
+        return true;
+      }
+    });
+    window.__rnLenis = lenis; // accès pratique pour le débogage
+  });
+  const easeInOut = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+  function scrollToY(y, duration) {
+    if (lenis) lenis.scrollTo(y, { duration: duration || 1.3, easing: easeInOut, lock: true, force: true });
+    else window.scrollTo({ top: y, behavior: reduced ? 'auto' : 'smooth' });
+  }
+
+  /* ---------- Ouverture : le rideau attend que la photo du héros soit prête ---------- */
+  safe('intro', () => {
+    const img = $('[data-scene] img');
+    const intro = d.classList.contains('intro');
+    const t0 = performance.now();
+    let done = false;
+    const reveal = () => {
+      if (done) return;
+      done = true;
+      const wait = intro ? Math.max(0, 1000 - (performance.now() - t0)) : 0;
+      setTimeout(() => {
+        d.classList.add('hero-in');
+        if (intro) {
+          d.classList.add('curtain-out');
+          setTimeout(() => d.classList.remove('intro', 'curtain-out'), 1200);
+        }
+      }, wait);
+    };
+    if (!img) { reveal(); return; }
+    const decoded = img.decode ? img.decode() : Promise.resolve();
+    const fonts = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
+    Promise.all([decoded.catch(() => {}), fonts.catch(() => {})]).then(reveal);
+    setTimeout(reveal, 2600);
+  });
+
   /* ---------- Moteur commun des animations liées au défilement ---------- */
   const scrubbers = [];
   const visible = new Set();
@@ -134,13 +187,13 @@
 
   /* ---------- En-tête : transparent sur le héros, voile ivoire ensuite ---------- */
   const header = $('[data-header]');
-  const hero = $('[data-scrub]');
+  const hero = $('[data-cine]');
   safe('header', () => {
     if (!header) return;
     const update = () => {
       const y = window.scrollY;
-      const limit = hero && !reduced ? hero.offsetHeight - (header.offsetHeight || 70) : 10;
-      header.classList.toggle('is-solid', y > limit || d.classList.contains('menu-open'));
+      const limit = hero ? hero.offsetHeight - (header.offsetHeight || 70) : 10;
+      header.classList.toggle('is-solid', y > limit - 2 || d.classList.contains('menu-open'));
     };
     update();
     window.addEventListener('scroll', update, { passive: true });
@@ -171,6 +224,7 @@
       btn.setAttribute('aria-expanded', String(open));
       if (label) label.textContent = open ? 'Fermer le menu' : 'Ouvrir le menu';
       d.classList.toggle('menu-open', open);
+      if (lenis) { if (open) lenis.stop(); else lenis.start(); }
       if (header) header.classList.toggle('is-solid', open || window.scrollY > (hero ? hero.offsetHeight - 70 : 10));
       if (open) { const first = $('a', menu); if (first) first.focus({ preventScroll: true }); }
     };
@@ -202,100 +256,164 @@
       e.preventDefault();
       if (target.id === 'contact' && formApi.preset) formApi.preset(a.dataset);
       const top = target.getBoundingClientRect().top + window.scrollY - (target.id === 'top' ? 0 : 70);
-      window.scrollTo({ top, behavior: reduced ? 'auto' : 'smooth' });
+      scrollToY(top, 1.4);
       history.replaceState(null, '', url.hash);
       if (target.id === 'contact') setTimeout(() => { const f = $('#contact-form [name="name"]'); if (f && fine) f.focus({ preventScroll: true }); }, reduced ? 0 : 1000);
     });
   });
 
-  /* ---------- Héros cinématique : trois plans, la caméra avance et traverse ----------
-     Chaque plan avance doucement (zoom sur son point focal). Au passage au plan
-     suivant, la caméra « plonge » dans le point focal pendant que le plan suivant
-     s’ouvre en iris depuis ce même point, avec un halo de lumière chaude.
-     Les textes (beats) apparaissent et disparaissent selon la progression. */
-  safe('scrub', () => {
+  /* ---------- Héros cinématique : un geste = un chapitre complet ----------
+     Molette, glissé au doigt ou flèches du clavier : chaque geste lance UN chapitre
+     entier (la caméra plonge dans le vase, le plan suivant s’ouvre en iris, halo de
+     lumière, textes qui montent), joué par des transitions CSS. Les crans suivants
+     d’une même rafale sont ignorés : plus d’image qui avance cran par cran.
+     Au dernier chapitre, le geste suivant fait glisser la page jusqu’à la boutique ;
+     en remontant tout en haut, les chapitres se rejouent à l’envers. */
+  safe('cine', () => {
     if (!hero || reduced) return;
-    const stage = $('.scrub__stage', hero);
+    const stage = $('.cine__stage', hero);
     const scenes = $$('[data-scene]', hero);
     const beats = $$('[data-beat]', hero);
-    const chapters = $$('[data-chapter]', hero);
-    const fill = $('[data-scrub-fill]', hero);
-    const cue = $('.cue', hero);
-    const T = [[0.27, 0.41], [0.58, 0.72]];     // passages plan 1 → 2, plan 2 → 3
-    const CH = [0, 0.31, 0.62, 0.86];           // début de chaque chapitre
-    const FADE = 0.05;
-    let W = 1, H = 1, R = 1, last = -1, chapter = -1;
+    const dots = $$('[data-goto]', hero);
+    const glow = $('[data-glow]', hero);
+    const SCENE_OF = [0, 1, 2, 2]; // plan affiché à chaque chapitre
+    const LAST = beats.length - 1;
+    const LOCK = 1250;             // pendant une transition, les gestes sont ignorés (ms)
+    const GAP = 200;               // pause minimale entre deux gestes distincts (ms)
+    let chapter = 0, busy = false, lastEvt = 0, lastDir = 0, touchAcc = 0, touchUsed = false;
     const foci = scenes.map(() => ({ x: 0, y: 0 }));
+
+    // Point focal de chaque plan, en pixels d’écran (l’image est recadrée en « cover »)
     const measure = () => {
-      W = stage.clientWidth || window.innerWidth;
-      H = stage.clientHeight || window.innerHeight;
-      R = Math.hypot(W, H);
+      const W = stage.clientWidth || window.innerWidth;
+      const H = stage.clientHeight || window.innerHeight;
       scenes.forEach((s, i) => {
         const img = $('img', s);
-        const iw = img.naturalWidth || 1600, ih = img.naturalHeight || 1067;
-        const k = Math.max(W / iw, H / ih);
-        const dw = iw * k, dh = ih * k;
+        const iw = Number(img.getAttribute('width')) || 1600, ih = Number(img.getAttribute('height')) || 1067;
+        const k = Math.max(W / iw, H / ih), dw = iw * k, dh = ih * k;
         foci[i] = {
           x: clamp((W - dw) / 2 + Number(s.dataset.fx || 0.5) * dw, W * 0.12, W * 0.88),
           y: clamp((H - dh) / 2 + Number(s.dataset.fy || 0.5) * dh, H * 0.15, H * 0.85)
         };
-        s.style.transformOrigin = foci[i].x.toFixed(1) + 'px ' + foci[i].y.toFixed(1) + 'px';
+        s.style.setProperty('--ox', foci[i].x.toFixed(1) + 'px');
+        s.style.setProperty('--oy', foci[i].y.toFixed(1) + 'px');
       });
-      last = -1;
-    };
-    const progress = () => {
-      const travel = hero.offsetHeight - window.innerHeight;
-      return travel > 0 ? clamp(-hero.getBoundingClientRect().top / travel, 0, 1) : 0;
+      // chaque plan s’ouvre depuis le point focal du plan précédent
+      scenes.forEach((s, i) => {
+        const f = foci[Math.max(0, i - 1)];
+        s.style.setProperty('--cx', f.x.toFixed(1) + 'px');
+        s.style.setProperty('--cy', f.y.toFixed(1) + 'px');
+      });
+      // styles recalculés tout de suite : la prochaine transition part des bonnes positions
+      scenes.forEach((s) => getComputedStyle(s).clipPath);
     };
     const render = () => {
-      const p = progress();
-      if (Math.abs(p - last) < 0.0002) return;
-      last = p;
-      let leak = 0, lx = 50, ly = 50;
+      const sc = SCENE_OF[chapter];
       scenes.forEach((s, i) => {
-        const enter = i ? T[i - 1] : null;
-        const exit = T[i] || null;
-        const start = enter ? enter[0] : 0;
-        const end = exit ? exit[1] : 1;
-        if (p < start || (exit && p > end)) { s.style.visibility = 'hidden'; return; }
-        s.style.visibility = 'visible';
-        let scale = 1 + 0.12 * clamp((p - start) / (end - start), 0, 1);
-        if (exit && p > exit[0]) { const t = (p - exit[0]) / (exit[1] - exit[0]); scale *= 1 + 1.15 * t * t * t; }
-        s.style.transform = 'scale(' + scale.toFixed(4) + ')';
-        if (enter && p < enter[1]) {
-          const t = sstep(enter[0], enter[1], p);
-          const f = foci[i - 1];
-          const r = t * (R + 120);
-          s.style.setProperty('--mask', 'radial-gradient(circle at ' + f.x.toFixed(0) + 'px ' + f.y.toFixed(0) + 'px, #000 ' + Math.max(0, r - 120).toFixed(0) + 'px, transparent ' + r.toFixed(0) + 'px)');
-          const glow = Math.sin(Math.PI * t);
-          if (glow > leak) { leak = glow; lx = f.x / W * 100; ly = f.y / H * 100; }
-        } else s.style.removeProperty('--mask');
+        s.dataset.state = i < sc ? 'past' : i === sc ? 'current' : 'future';
+        s.toggleAttribute('data-deep', i === sc && chapter === LAST);
       });
-      stage.style.setProperty('--leak', (leak * 0.8).toFixed(3));
-      stage.style.setProperty('--lx', lx.toFixed(1) + '%');
-      stage.style.setProperty('--ly', ly.toFixed(1) + '%');
-      beats.forEach((b) => {
-        const a = Number(b.dataset.in), z = Number(b.dataset.out);
-        const op = sstep(a, a + FADE, p) * (1 - sstep(z - FADE, z, p));
-        const dir = p < a + FADE ? 1 : -1;
-        b.style.opacity = op.toFixed(3);
-        b.style.transform = op > 0.999 ? '' : 'translate3d(0,' + ((1 - op) * 34 * dir).toFixed(1) + 'px,0)';
-        b.style.visibility = op < 0.01 ? 'hidden' : 'visible';
-        b.inert = op < 0.5;
+      beats.forEach((b, i) => {
+        b.dataset.state = i < chapter ? 'past' : i === chapter ? 'current' : 'future';
+        b.inert = i !== chapter;
       });
-      let c = 0;
-      CH.forEach((v, i) => { if (p >= v) c = i; });
-      if (c !== chapter) { chapters.forEach((li, i) => li.classList.toggle('is-on', i === c)); chapter = c; }
-      if (fill) fill.style.setProperty('--p', p.toFixed(4));
-      if (cue) cue.style.opacity = String(1 - sstep(0.01, 0.06, p));
+      dots.forEach((b, i) => { if (i === chapter) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current'); });
+      stage.style.setProperty('--ch', String(chapter));
     };
+    const flash = (from, to) => {
+      if (!glow) return;
+      const a = SCENE_OF[from], b = SCENE_OF[to];
+      const f = a === b ? foci[a] : foci[Math.max(a, b) - 1];
+      glow.style.setProperty('--gx', f.x.toFixed(0) + 'px');
+      glow.style.setProperty('--gy', f.y.toFixed(0) + 'px');
+      glow.classList.remove('is-flash');
+      void glow.offsetWidth; // relance l’animation
+      glow.classList.add('is-flash');
+    };
+    const lock = () => { busy = true; setTimeout(() => { busy = false; }, LOCK); };
+    const go = (n) => {
+      n = clamp(n, 0, LAST);
+      if (n === chapter || busy) return;
+      const from = chapter;
+      chapter = n;
+      stage.style.setProperty('--base', '.55s'); // les textes attendent que le plan ait bougé
+      flash(from, n);
+      render();
+      lock();
+      if (window.__rnSound) window.__rnSound.transition(n > from ? 1 : -1);
+      track('hero_chapter', { chapter: n + 1 });
+    };
+    const release = () => {
+      if (busy) return;
+      lock();
+      if (window.__rnSound) window.__rnSound.release();
+      scrollToY(hero.offsetTop + hero.offsetHeight - (header ? header.offsetHeight : 0), 1.25);
+    };
+    const step = (dir) => { if (dir > 0 && chapter === LAST) release(); else go(chapter + dir); };
+    const atTop = () => window.scrollY <= 4;
+    const blocked = () => d.classList.contains('menu-open');
+
+    // Molette / pavé tactile : renvoie true quand le geste est consommé par le héros
+    heroInput.wheel = (dx, dy, ev) => {
+      if (blocked() || ev.ctrlKey || Math.abs(dx) > Math.abs(dy) || !atTop()) return false;
+      const dir = dy > 0 ? 1 : -1;
+      if (dir < 0 && chapter === 0) return false;
+      const now = performance.now();
+      const fresh = now - lastEvt > GAP || dir !== lastDir;
+      lastEvt = now;
+      lastDir = dir;
+      if (fresh && !busy) step(dir);
+      return true;
+    };
+    // Écran tactile : un glissé = un chapitre (tirer vers le bas en haut de page reste possible)
+    heroInput.touch = (dx, dy, ev) => {
+      if (ev.type === 'touchstart') { touchAcc = 0; touchUsed = false; return false; }
+      if (ev.type !== 'touchmove' || blocked() || !atTop()) return false;
+      if (touchUsed) return true;
+      if (Math.abs(dx) > Math.abs(dy)) return false;
+      touchAcc += dy;
+      if (touchAcc < 0 && chapter === 0) { touchAcc = 0; return false; }
+      if (Math.abs(touchAcc) > 26) {
+        touchUsed = true;
+        if (!busy) step(touchAcc > 0 ? 1 : -1);
+      }
+      return true;
+    };
+    // Sans Lenis (script bloqué), mêmes règles avec des écouteurs natifs
+    if (!lenis) {
+      window.addEventListener('wheel', (e) => { if (heroInput.wheel(e.deltaX, e.deltaY, e)) e.preventDefault(); }, { passive: false });
+      let tx = 0, ty = 0;
+      window.addEventListener('touchstart', (e) => { const p = e.touches[0]; tx = p.clientX; ty = p.clientY; heroInput.touch(0, 0, e); }, { passive: true });
+      window.addEventListener('touchmove', (e) => {
+        const p = e.touches[0];
+        const dx = tx - p.clientX, dy = ty - p.clientY;
+        tx = p.clientX; ty = p.clientY;
+        if (heroInput.touch(dx, dy, e) && e.cancelable) e.preventDefault();
+      }, { passive: false });
+    }
+    // Clavier : flèches, Page suivante / précédente, Espace
+    document.addEventListener('keydown', (e) => {
+      if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey || blocked() || !atTop()) return;
+      if (e.target && e.target.closest && e.target.closest('input, textarea, select, button, [contenteditable="true"]')) return;
+      let dir = 0;
+      if (e.key === 'ArrowDown' || e.key === 'PageDown' || (e.key === ' ' && !e.shiftKey)) dir = 1;
+      else if (e.key === 'ArrowUp' || e.key === 'PageUp' || (e.key === ' ' && e.shiftKey)) dir = -1;
+      if (!dir || (dir < 0 && chapter === 0)) return;
+      e.preventDefault();
+      if (!busy) step(dir);
+    });
+    // Repères de chapitre cliquables
+    dots.forEach((b) => b.addEventListener('click', () => go(Number(b.dataset.goto))));
+
     measure();
-    scenes.forEach((s) => { const img = $('img', s); if (!img.complete) img.addEventListener('load', () => { measure(); render(); }, { once: true }); });
-    window.addEventListener('resize', () => { measure(); render(); });
-    // les plans suivants se décodent en avance pour un passage sans accroc
-    scenes.slice(1).forEach((s) => { const img = $('img', s); if (img.decode) img.decode().catch(() => {}); });
-    addScrubber(hero, () => { render(); }, '0px');
     render();
+    window.addEventListener('resize', measure);
+    // les plans suivants se décodent à l’avance : aucun passage vers une image pas prête
+    scenes.slice(1).forEach((s) => { const img = $('img', s); if (img.decode) img.decode().catch(() => {}); });
+    // la respiration des photos se met en pause quand le héros est hors de l’écran
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver((entries) => entries.forEach((e) => hero.classList.toggle('is-off', !e.isIntersecting))).observe(hero);
+    }
   });
 
   /* ---------- Titres : lignes qui montent derrière un masque ---------- */
@@ -329,7 +447,7 @@
       groups.set(p, n + 1);
       if (n) el.style.setProperty('--d', Math.min(0.48, n * 0.08).toFixed(2) + 's');
     });
-    const targets = $$('[data-reveal], [data-lines], [data-wordmark]');
+    const targets = $$('[data-reveal], [data-lines], [data-wordmark], [data-inview], [data-words-quote]');
     if (!('IntersectionObserver' in window)) { targets.forEach((el) => el.classList.add('is-in')); return; }
     const io = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
@@ -364,7 +482,7 @@
     nums.forEach((el) => io.observe(el));
   });
 
-  /* ---------- Parallaxes : image plein écran, lettre, citation ---------- */
+  /* ---------- Parallaxe douce de l’image « Entreprises » (lissée par Lenis) ---------- */
   safe('parallax', () => {
     if (reduced) return;
     $$('[data-parallax]').forEach((img) => {
@@ -374,12 +492,8 @@
         img.style.setProperty('--py', ((r.top + r.height / 2 - window.innerHeight / 2) * -0.12).toFixed(1) + 'px');
       });
     });
-    const letter = $('[data-letter]');
-    if (letter) addScrubber(letter, () => {
-      const r = letter.getBoundingClientRect();
-      letter.style.setProperty('--p', easeOut(clamp((window.innerHeight - r.top) / (window.innerHeight * 0.8), 0, 1)).toFixed(4));
-    });
   });
+  /* ---------- Citation : les mots s’allument en cascade, d’un seul coup, à l’arrivée ---------- */
   safe('quote', () => {
     const quote = $('[data-words-quote]');
     const text = quote && $('[data-words]', quote);
@@ -396,13 +510,6 @@
       text.appendChild(s);
       if (i < words.length - 1) text.appendChild(document.createTextNode(' '));
     });
-    quote.style.setProperty('--n', String(words.length));
-    if (reduced) { quote.style.setProperty('--p', '1'); return; }
-    quote.style.setProperty('--p', '0');
-    addScrubber(quote, () => {
-      const r = quote.getBoundingClientRect();
-      quote.style.setProperty('--p', clamp((window.innerHeight * 0.85 - r.top) / (window.innerHeight * 0.55), 0, 1).toFixed(4));
-    });
   });
 
   /* ---------- Galerie : défile en continu, accélère et suit le sens du défilement ---------- */
@@ -410,10 +517,21 @@
     const track = $('[data-marquee]');
     if (!track) return;
     const row = track.firstElementChild;
-    const clone = row.cloneNode(true);
-    clone.setAttribute('aria-hidden', 'true');
-    $$('img', clone).forEach((img) => { img.alt = ''; });
-    track.appendChild(clone);
+    // La copie du ruban (pour boucler sans fin) n’est créée qu’à l’approche de la galerie :
+    // cloner les images plus tôt les ferait télécharger dès l’ouverture de la page.
+    const cloneRow = () => {
+      if (track.children.length > 1) return;
+      const clone = row.cloneNode(true);
+      clone.setAttribute('aria-hidden', 'true');
+      $$('img', clone).forEach((img) => { img.alt = ''; });
+      track.appendChild(clone);
+    };
+    if ('IntersectionObserver' in window) {
+      const near = new IntersectionObserver((entries) => {
+        if (entries.some((e) => e.isIntersecting)) { cloneRow(); near.disconnect(); }
+      }, { rootMargin: '600px 0px' });
+      near.observe(track.parentElement);
+    } else cloneRow();
     if (reduced) return;
     let x = 0, dir = 1, boost = 0;
     addScrubber(track.parentElement, (dy) => {
@@ -743,11 +861,23 @@
       if (footer) io.observe(footer);
     }
     function update() {
-      const after = hero && !reduced ? window.scrollY > hero.offsetHeight - window.innerHeight * 1.2 : window.scrollY > 300;
+      const after = window.scrollY > (hero ? hero.offsetHeight * 0.55 : 300);
       dock.classList.toggle('is-on', after && !near);
     }
     update();
     window.addEventListener('scroll', update, { passive: true });
+  });
+
+  /* ---------- Sons d’interface (seulement si le visiteur a activé le son) ---------- */
+  safe('sound-ui', () => {
+    const S = () => window.__rnSound;
+    if (fine) document.addEventListener('pointerover', (e) => {
+      const t = e.target instanceof Element ? e.target.closest('.btn, .card__link, .chapters button, .hdr__nav a, .link-arrow, .pill, .snd__btn') : null;
+      if (t && !t.contains(e.relatedTarget) && S()) S().tick();
+    });
+    document.addEventListener('click', (e) => {
+      if (e.target instanceof Element && e.target.closest('.btn--dark, .btn--blush, .card__link') && S()) S().click();
+    });
   });
 
   /* ---------- Animations : réduire / réactiver ---------- */
