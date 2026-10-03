@@ -21,8 +21,8 @@ partout, « Commander un bouquet », plus le devis entreprise, l’appel et What
   site ») est fait avec trois vraies photos de la boutique : la caméra plonge dans un vase et le plan
   suivant s’ouvre en iris depuis ce point, avec un halo de lumière chaude. Quatre chapitres : la
   vitrine, l’atelier, la référence, l’appel à l’action ; le geste suivant glisse jusqu’à la boutique.
-- **Son** : ambiance sonore réglable (bouton « Son » + volume dans l’en-tête et le menu mobile),
-  composée et synthétisée en direct, coupée par défaut.
+- **Son** : ambiance sonore très discrète, toujours active, sans bouton : on la règle avec le volume
+  de l’appareil. Composée et synthétisée en direct.
 - **Couleurs** (tirées des photos de la boutique) : ivoire `#fbf6f1`, lin rosé `#f5ebe4`, rose poudré
   `#f6d3d6`, abricot `#f5c9ad`, et un bordeaux presque noir `#3a0c1d` (la couleur d’une rose noire)
   pour les boutons et les bandes sombres. Un seul accent, framboise `#c23561`, pour les italiques.
@@ -44,7 +44,7 @@ partials/               blocs communs (en-tête, pied de page, cookies, icônes,
 assets/css/main.css     tout le style : charte, typographie, animations, responsive
 assets/js/boot.js       copié en ligne dans le <head> : HTTPS forcé, préférence d’animation, rideau
 assets/js/app.js        héros (un geste = un chapitre), révélations, formulaire, cookies, mesure d’audience…
-assets/js/sound.js      ambiance sonore synthétisée (Web Audio), bouton Son et volume
+assets/js/sound.js      ambiance sonore synthétisée (Web Audio), toujours active
 assets/vendor/          Lenis 1.3 (défilement amorti, licence MIT)
 assets/img/             photos de la boutique en WebP, plusieurs tailles (srcset)
 assets/fonts/           les 4 polices (woff2, sous-ensemble latin)
@@ -93,13 +93,15 @@ version statique, mémorisée (`rnb_motion`). Aussi : `?motion=reduce`.
 
 ## Ambiance sonore
 
-- Bouton **Son** dans l’en-tête (barres animées quand il joue) et curseur de **volume** qui apparaît
-  dès que le son est activé ; mêmes réglages dans le menu mobile. Coupé par défaut : le navigateur
-  n’autorise le son qu’après un geste du visiteur. Choix et volume mémorisés (`rnb_sound`).
-- Une nappe douce (accords de fa majeur qui se succèdent, filtre qui respire), des carillons de verre
-  au hasard, un souffle et une fleur de trois notes à chaque chapitre du héros, un « tic » discret au
-  survol des boutons, deux notes au clic sur une commande. Mis en pause quand l’onglet est caché.
-- Niveaux vérifiés par rendu hors ligne : environ −26 dB en moyenne et −16 dB en crête au volume 60.
+- **Toujours active, sans bouton On/Off ni curseur** : le volume se règle avec celui du téléphone ou
+  de l’ordinateur. Les navigateurs interdisent tout son avant un geste du visiteur : l’ambiance
+  démarre d’elle-même, en fondu, au premier toucher, glissé dans le héros, clic ou touche du clavier.
+- Une nappe grave et feutrée (accords de ré majeur, sinusoïdes seules, filtre très doux), de rares
+  notes de piano « feutre » lointaines, un souffle d’air presque imperceptible, et un frôlement doux
+  avec une note à chaque chapitre du héros. Aucun son au survol ni au clic. Pause quand l’onglet est caché.
+- Niveau volontairement bas, vérifié par rendu hors ligne : environ −36 dB en moyenne, −23 dB en crête.
+- Accessibilité : un lien discret « Couper le son » en bas du pied de page (un son qui démarre seul
+  doit pouvoir être coupé, critère WCAG 1.4.2), choix mémorisé (`rnb_sound`).
 
 ## Formulaire, anti-spam, API
 

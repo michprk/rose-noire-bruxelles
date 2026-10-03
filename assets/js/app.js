@@ -868,18 +868,6 @@
     window.addEventListener('scroll', update, { passive: true });
   });
 
-  /* ---------- Sons d’interface (seulement si le visiteur a activé le son) ---------- */
-  safe('sound-ui', () => {
-    const S = () => window.__rnSound;
-    if (fine) document.addEventListener('pointerover', (e) => {
-      const t = e.target instanceof Element ? e.target.closest('.btn, .card__link, .chapters button, .hdr__nav a, .link-arrow, .pill, .snd__btn') : null;
-      if (t && !t.contains(e.relatedTarget) && S()) S().tick();
-    });
-    document.addEventListener('click', (e) => {
-      if (e.target instanceof Element && e.target.closest('.btn--dark, .btn--blush, .card__link') && S()) S().click();
-    });
-  });
-
   /* ---------- Animations : réduire / réactiver ---------- */
   safe('motion', () => {
     $$('[data-motion-toggle]').forEach((b) => {
